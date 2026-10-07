@@ -31,7 +31,8 @@
       "name": "report-page",
       "status": "completed",
       "started_at": "2026-10-07T22:20:38+0900",
-      "summary": "src/app/page.tsx를 force-dynamic 서버 컴포넌트 리포트로 교체(env 3개 중 빈 값이면 변수 목록+.env.example→.env.local 안내, fetchChannelData→analyzeChannel을 analyze() 하나의 try/catch로 감싸 에러 시 error.message 렌더, 영상 0개면 Claude 미호출·'분석할 영상이 없습니다'), 섹션 4개(채널 개요: 구독자 compact/비공개·영상 수·쇼츠 비중%·새로고침 안내 / 콘텐츠 요약+카테고리 dl / outlierScore 내림차순 Top 10 표 / 쇼츠 후보 카드: 원본 링크·배수·'start ~ 다음 start(마지막은 끝) 「제목」' &t=초s 링크 또는 '구간 정보 없음 — 영상 전체 검토'·훅·이유·N / 10, 0개면 안내)를 같은 파일 내 함수 컴포넌트로 렌더, 숫자는 Intl.NumberFormat ko-KR, 포인트 색 blue-700 하나·max-w-5xl. src/app/loading.tsx에 '채널 분석 중… 영상 수집과 AI 분석에 약 1분 걸립니다' 문구만 추가"
+      "summary": "src/app/page.tsx를 force-dynamic 서버 컴포넌트 리포트로 교체(env 3개 중 빈 값이면 변수 목록+.env.example→.env.local 안내, fetchChannelData→analyzeChannel을 analyze() 하나의 try/catch로 감싸 에러 시 error.message 렌더, 영상 0개면 Claude 미호출·'분석할 영상이 없습니다'), 섹션 4개(채널 개요: 구독자 compact/비공개·영상 수·쇼츠 비중%·새로고침 안내 / 콘텐츠 요약+카테고리 dl / outlierScore 내림차순 Top 10 표 / 쇼츠 후보 카드: 원본 링크·배수·'start ~ 다음 start(마지막은 끝) 「제목」' &t=초s 링크 또는 '구간 정보 없음 — 영상 전체 검토'·훅·이유·N / 10, 0개면 안내)를 같은 파일 내 함수 컴포넌트로 렌더, 숫자는 Intl.NumberFormat ko-KR, 포인트 색 blue-700 하나·max-w-5xl. src/app/loading.tsx에 '채널 분석 중… 영상 수집과 AI 분석에 약 1분 걸립니다' 문구만 추가",
+      "completed_at": "2026-10-07T22:23:49+0900"
     }
   ],
   "created_at": "2026-10-07T22:11:26+0900"
