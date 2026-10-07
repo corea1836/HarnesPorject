@@ -16,7 +16,7 @@
       "status": "completed",
       "started_at": "2026-10-07T22:14:20+0900",
       "summary": "src/lib/youtube.ts에 타입 ChannelRef·Chapter·Channel·Video와 함수 parseChannelUrl(@핸들·/channel/UC…만 지원, 한글 핸들 디코딩, 미지원 시 한국어 throw)·parseDuration·extractChapters·addMetrics(viewsPerDay=views/max(1,경과일 소수), isShort 그룹 중앙값 기반 outlierScore, engagementRate)·fetchChannelData(fetch로 channels→playlistItems→videos 3회, 0초 영상 제외, videos 응답 순서 유지, 업로드 0개면 videos 호출 생략, 에러는 '(endpoint status reason)'만 담은 한국어 메시지로 키 비노출) export. youtube.test.ts 40개 테스트(fetch는 vi.stubGlobal mock)",
-      "completed_at": "2026-10-07T22:16:39+0900"
+      "completed_at": "2026-10-07T22:17:06+0900"
     },
     {
       "step": 2,
