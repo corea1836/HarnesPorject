@@ -24,7 +24,7 @@
       "status": "completed",
       "started_at": "2026-10-07T22:17:06+0900",
       "summary": "@anthropic-ai/sdk 0.131·zod 4 설치. src/lib/claude.ts에 AnalysisSchema(zod, 제약 없음)·타입 ChannelAnalysis와 함수 buildPrompt(한국어, 채널명·구독자(null이면 비공개)·영상 수 + 영상별 id·제목·롱폼/쇼츠·업로드일·길이(m:ss/h:mm:ss)·조회수·일평균·배수·참여율·태그 앞 5개·공백 정리 후 설명 앞 300자·챕터 \"start 제목\")·validateAnalysis(없는 videoId·쇼츠 후보 제거, 챕터에 없는 chapterStart→null, score 반올림 후 1~10 clamp, score 내림차순 최대 6개, 입력 불변)·analyzeChannel(claude-opus-5-5를 beta.messages.parse + betaZodOutputFormat, fallbacks \"default\"(server-side-fallback-2026-07-01), effort medium, max_tokens 16000으로 1회 호출, refusal·parsed_output null이면 한국어 throw, SDK 에러는 그대로 전파, client 주입 가능) export. claude.test.ts 20개 테스트(mock client 주입)",
-      "completed_at": "2026-10-07T22:20:20+0900"
+      "completed_at": "2026-10-07T22:20:38+0900"
     },
     {
       "step": 3,
