@@ -7,7 +7,8 @@
       "name": "project-setup",
       "status": "completed",
       "started_at": "2026-10-07T22:11:26+0900",
-      "summary": "Next.js 16.4 App Router + TS strict + Tailwind v4 + ESLint + Vitest 5 뼈대 구성(package name shorts-scout, test 스크립트 vitest run --passWithNoTests), page.tsx는 'Shorts Scout' 제목만, layout.tsx는 lang=ko·시스템 폰트, .env.example 추가. step 3의 force-dynamic과 충돌하지 않도록 next.config.ts에서 cacheComponents/partialPrefetching 제거, vitest peer 요구에 맞춰 @types/node ^24로 상향"
+      "summary": "Next.js 16.4 App Router + TS strict + Tailwind v4 + ESLint + Vitest 5 뼈대 구성(package name shorts-scout, test 스크립트 vitest run --passWithNoTests), page.tsx는 'Shorts Scout' 제목만, layout.tsx는 lang=ko·시스템 폰트, .env.example 추가. step 3의 force-dynamic과 충돌하지 않도록 next.config.ts에서 cacheComponents/partialPrefetching 제거, vitest peer 요구에 맞춰 @types/node ^24로 상향",
+      "completed_at": "2026-10-07T22:14:20+0900"
     },
     {
       "step": 1,
