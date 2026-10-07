@@ -7,3 +7,7 @@ tsconfig.tsbuildinfo
 # phase execution outputs
 phases/**/phase*-output.json
 phases/**/step*-output.json
+
+# env (API keys)
+.env*
+!.env.example
