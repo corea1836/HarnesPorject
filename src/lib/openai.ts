@@ -1,5 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
+import OpenAI from "openai";
+import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import type { Channel, Video } from "./youtube";
 
@@ -18,7 +18,7 @@ export const AnalysisSchema = z.object({
 });
 export type ChannelAnalysis = z.infer<typeof AnalysisSchema>;
 
-const MODEL = "claude-opus-5-5";
+const MODEL = "gpt-6.1-sol";
 const MAX_CANDIDATES = 6;
 const MAX_TAGS = 5;
 const MAX_DESCRIPTION_CHARS = 300;
@@ -116,30 +116,30 @@ export function validateAnalysis(analysis: ChannelAnalysis, videos: Video[]): Ch
   return { ...analysis, shortsCandidates };
 }
 
-// ---------- Claude 호출 ----------
+// ---------- OpenAI 호출 ----------
 
 export async function analyzeChannel(
   channel: Channel,
   videos: Video[],
-  client: Anthropic = new Anthropic(),
+  client: OpenAI = new OpenAI(),
 ): Promise<ChannelAnalysis> {
-  const res = await client.beta.messages.parse({
+  const res = await client.responses.parse({
     model: MODEL,
-    max_tokens: 16000,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    output_config: { effort: "medium", format: betaZodOutputFormat(AnalysisSchema) },
-    messages: [{ role: "user", content: buildPrompt(channel, videos) }],
+    max_output_tokens: 16000,
+    reasoning: { effort: "medium" },
+    text: { format: zodTextFormat(AnalysisSchema, "channel_analysis") },
+    input: buildPrompt(channel, videos),
   });
 
-  if (res.stop_reason === "refusal") {
-    const category = res.stop_details?.category;
-    throw new Error(
-      `Claude가 채널 분석 요청을 거절했습니다${category ? ` (${category})` : ""}. 다른 채널로 시도해 보세요.`,
-    );
+  const refused = res.output.some(
+    (item) => item.type === "message" && item.content.some((c) => c.type === "refusal"),
+  );
+  if (refused) {
+    throw new Error("OpenAI가 채널 분석 요청을 거절했습니다. 다른 채널로 시도해 보세요.");
   }
-  if (!res.parsed_output) {
-    throw new Error(`Claude 응답에서 분석 결과를 읽지 못했습니다 (stop_reason: ${res.stop_reason}).`);
+  if (!res.output_parsed) {
+    const reason = res.incomplete_details?.reason ?? res.status;
+    throw new Error(`OpenAI 응답에서 분석 결과를 읽지 못했습니다 (${reason}).`);
   }
-  return validateAnalysis(res.parsed_output, videos);
+  return validateAnalysis(res.output_parsed, videos);
 }

@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
-import { analyzeChannel, type ChannelAnalysis } from "@/lib/claude";
+import { analyzeChannel, type ChannelAnalysis } from "@/lib/openai";
 import { fetchChannelData, type Channel, type Video } from "@/lib/youtube";
 
 // 빌드 시 미리 렌더하지 않고 요청마다 수집·분석한다.
 export const dynamic = "force-dynamic";
 
-const ENV_KEYS = ["YOUTUBE_CHANNEL_URL", "YOUTUBE_API_KEY", "ANTHROPIC_API_KEY"] as const;
+const ENV_KEYS = ["YOUTUBE_CHANNEL_URL", "YOUTUBE_API_KEY", "OPENAI_API_KEY"] as const;
 const TOP_VIDEOS = 10;
 
 const integer = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 });
@@ -46,7 +46,7 @@ export default async function Page() {
     );
   }
 
-  // ANTHROPIC_API_KEY는 SDK가 env에서 직접 읽는다.
+  // OPENAI_API_KEY는 SDK가 env에서 직접 읽는다.
   const result = await analyze(process.env.YOUTUBE_CHANNEL_URL!, process.env.YOUTUBE_API_KEY!);
 
   if (result.kind === "error") {

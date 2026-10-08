@@ -1,11 +1,11 @@
-import type Anthropic from "@anthropic-ai/sdk";
+import type OpenAI from "openai";
 import { describe, expect, it, vi } from "vitest";
 import {
   analyzeChannel,
   buildPrompt,
   validateAnalysis,
   type ChannelAnalysis,
-} from "./claude";
+} from "./openai";
 import type { Channel, Video } from "./youtube";
 
 const channel: Channel = { id: "UC123", title: "테스트 채널", subscribers: 12345 };
@@ -220,7 +220,7 @@ describe("validateAnalysis", () => {
 describe("analyzeChannel", () => {
   function mockClient(response: unknown) {
     const parse = vi.fn().mockResolvedValue(response);
-    const client = { beta: { messages: { parse } } } as unknown as Anthropic;
+    const client = { responses: { parse } } as unknown as OpenAI;
     return { client, parse };
   }
 
@@ -231,31 +231,37 @@ describe("analyzeChannel", () => {
     candidate({ videoId: "long2", chapterStart: "1:00", score: 4 }),
   ]);
 
-  it("claude-opus-5-5를 server-side fallback과 구조화 응답으로 1회 호출한다", async () => {
-    const { client, parse } = mockClient({
-      stop_reason: "end_turn",
-      parsed_output: parsedOutput,
-    });
+  const completed = {
+    status: "completed",
+    incomplete_details: null,
+    output: [],
+    output_parsed: parsedOutput,
+  };
+
+  it("gpt-6.1-sol을 구조화 응답(strict json_schema)으로 1회 호출한다", async () => {
+    const { client, parse } = mockClient(completed);
     await analyzeChannel(channel, videos, client);
 
     expect(parse).toHaveBeenCalledTimes(1);
     const params = parse.mock.calls[0][0];
     expect(params).toMatchObject({
-      model: "claude-opus-5-5",
-      max_tokens: 16000,
-      fallbacks: "default",
-      output_config: { effort: "medium" },
-      messages: [{ role: "user", content: buildPrompt(channel, videos) }],
+      model: "gpt-6.1-sol",
+      max_output_tokens: 16000,
+      reasoning: { effort: "medium" },
+      input: buildPrompt(channel, videos),
     });
-    expect(params.betas).toContain("server-side-fallback-2026-07-01");
-    expect(params.output_config.format).toMatchObject({ type: "json_schema" });
-    for (const key of ["temperature", "top_p", "thinking", "stream", "tools"]) {
+    expect(params.text.format).toMatchObject({
+      type: "json_schema",
+      name: "channel_analysis",
+      strict: true,
+    });
+    for (const key of ["temperature", "top_p", "stream", "tools"]) {
       expect(params).not.toHaveProperty(key);
     }
   });
 
   it("정상 응답은 validateAnalysis를 거쳐 반환한다", async () => {
-    const { client } = mockClient({ stop_reason: "end_turn", parsed_output: parsedOutput });
+    const { client } = mockClient(completed);
     const result = await analyzeChannel(channel, videos, client);
     expect(result).toEqual(validateAnalysis(parsedOutput, videos));
     expect(result.shortsCandidates).toEqual([
@@ -266,22 +272,34 @@ describe("analyzeChannel", () => {
 
   it("refusal이면 한국어 메시지로 throw한다", async () => {
     const { client } = mockClient({
-      stop_reason: "refusal",
-      stop_details: { type: "refusal", category: "cyber", explanation: null },
-      parsed_output: null,
+      status: "completed",
+      incomplete_details: null,
+      output: [
+        {
+          type: "message",
+          role: "assistant",
+          content: [{ type: "refusal", refusal: "I can't help with that." }],
+        },
+      ],
+      output_parsed: null,
     });
     await expect(analyzeChannel(channel, videos, client)).rejects.toThrow(/거절/);
   });
 
-  it("parsed_output이 null이면 throw한다", async () => {
-    const { client } = mockClient({ stop_reason: "max_tokens", parsed_output: null });
-    await expect(analyzeChannel(channel, videos, client)).rejects.toThrow(/Claude/);
+  it("응답이 잘려 output_parsed가 null이면 이유를 담아 throw한다", async () => {
+    const { client } = mockClient({
+      status: "incomplete",
+      incomplete_details: { reason: "max_output_tokens" },
+      output: [],
+      output_parsed: null,
+    });
+    await expect(analyzeChannel(channel, videos, client)).rejects.toThrow(/max_output_tokens/);
   });
 
   it("SDK 에러는 삼키지 않고 그대로 던진다", async () => {
-    const error = new Error("401 authentication_error");
+    const error = new Error("401 invalid_api_key");
     const parse = vi.fn().mockRejectedValue(error);
-    const client = { beta: { messages: { parse } } } as unknown as Anthropic;
+    const client = { responses: { parse } } as unknown as OpenAI;
     await expect(analyzeChannel(channel, videos, client)).rejects.toBe(error);
   });
 });

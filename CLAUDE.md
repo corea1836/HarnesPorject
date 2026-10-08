@@ -7,13 +7,13 @@
 - TypeScript strict mode
 - Tailwind CSS
 - Vitest (테스트)
-- @anthropic-ai/sdk + zod (Claude 분석)
+- openai + zod (OpenAI 분석)
 
 ## 아키텍처 규칙
 - CRITICAL: MVP다. 오버 엔지니어링 금지. docs/ARCHITECTURE.md에 없는 폴더·파일·추상화(캐시, DB, API 라우트, components/·types/·services/ 폴더, 상태 관리 라이브러리, 공통 유틸 계층)를 만들지 말 것.
-- CRITICAL: API 키(YOUTUBE_API_KEY, ANTHROPIC_API_KEY)는 서버 코드에서만 사용한다. `'use client'` 파일을 만들지 말 것 (MVP에는 클라이언트 인터랙션이 없다).
-- CRITICAL: 테스트에서 실제 YouTube/Claude API를 호출하지 말 것. `fetch`와 Anthropic client는 mock한다.
-- 숫자 지표는 코드로 계산하고, Claude는 해석과 추천만 한다.
+- CRITICAL: API 키(YOUTUBE_API_KEY, OPENAI_API_KEY)는 서버 코드에서만 사용한다. `'use client'` 파일을 만들지 말 것 (MVP에는 클라이언트 인터랙션이 없다).
+- CRITICAL: 테스트에서 실제 YouTube/OpenAI API를 호출하지 말 것. `fetch`와 OpenAI client는 mock한다.
+- 숫자 지표는 코드로 계산하고, LLM(OpenAI)은 해석과 추천만 한다.
 - 타입은 그 타입을 쓰는 모듈 안에서 export한다.
 
 ## 개발 프로세스
